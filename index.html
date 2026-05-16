@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Cryptex Soluce</title>
+
+<style>
+
+body{
+    background:#111;
+    color:white;
+    font-family:Arial, Helvetica, sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px;
+}
+
+h1{
+    font-size:42px;
+    margin-bottom:30px;
+}
+
+.container{
+    display:flex;
+    gap:30px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:30px;
+}
+
+.box{
+    padding:20px;
+    border-radius:18px;
+    width:320px;
+}
+
+.cryptex{
+    background:#ff00aa;
+}
+
+.valve{
+    background:#00bb55;
+}
+
+label{
+    display:block;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+select{
+    width:100%;
+    padding:14px;
+    font-size:24px;
+    border-radius:10px;
+    border:none;
+    color:black;
+    font-weight:bold;
+}
+
+#error{
+    color:red;
+    font-size:34px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+#results{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    justify-content:center;
+    max-width:1400px;
+}
+
+.step{
+    background:#222;
+    border:3px solid white;
+    border-radius:16px;
+    width:210px;
+    min-height:140px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:12px;
+}
+
+.place{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.number{
+    font-size:46px;
+    margin-top:10px;
+    color:#00ff99;
+    font-weight:bold;
+}
+
+.ending{
+    color:#ffcc00;
+    font-size:30px;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Cryptex Soluce</h1>
+
+<div class="container">
+
+    <div class="box cryptex">
+        <label>Cryptex Location</label>
+        <select id="cryptex">
+            <option>--Choice--</option>
+            <option>Armory</option>
+            <option>Department Store</option>
+            <option>Dragon Command</option>
+            <option>Infirmary</option>
+            <option>Supply Depot</option>
+            <option>Tank Factory</option>
+        </select>
+    </div>
+
+    <div class="box valve">
+        <label>Valve Start</label>
+        <select id="valve">
+            <option>--Choice--</option>
+            <option>Armory</option>
+            <option>Department Store</option>
+            <option>Dragon Command</option>
+            <option>Infirmary</option>
+            <option>Supply Depot</option>
+            <option>Tank Factory</option>
+        </select>
+    </div>
+
+</div>
+
+<div id="error"></div>
+
+<div id="results"></div>
+
+<script>
+
+const data = {
+
+"Armory|Department Store": [
+["Department Store",3],
+["Dragon Command",3],
+["Infirmary",2],
+["Tank Factory",2],
+["Supply Depot",2]
+],
+
+"Armory|Dragon Command": [
+["Dragon Command",1],
+["Supply Depot",3],
+["Tank Factory",1],
+["Infirmary",1],
+["Department Store",1]
+],
+
+"Armory|Infirmary": [
+["Infirmary",2],
+["Tank Factory",2],
+["Supply Depot",1],
+["Dragon Command",2],
+["Department Store",1]
+],
+
+"Armory|Supply Depot": [
+["Supply Depot",3],
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",2],
+["Department Store",1]
+],
+
+"Armory|Tank Factory": [
+["Tank Factory",1],
+["Infirmary",1],
+["Department Store",3],
+["Dragon Command",1],
+["Supply Depot",2]
+],
+
+"Department Store|Armory": [
+["Armory",1],
+["Supply Depot",3],
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",2]
+],
+
+"Department Store|Dragon Command": [
+["Dragon Command",1],
+["Supply Depot",2],
+["Armory",2],
+["Tank Factory",1],
+["Infirmary",1]
+],
+
+"Department Store|Infirmary": [
+["Infirmary",3],
+["Dragon Command",1],
+["Supply Depot",3],
+["Tank Factory",3],
+["Armory",3]
+],
+
+"Department Store|Supply Depot": [
+["Supply Depot",2],
+["Armory",2],
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",2]
+],
+
+"Department Store|Tank Factory": [
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",1],
+["Supply Depot",2],
+["Armory",3]
+],
+
+"Dragon Command|Armory": [
+["Armory",3],
+["Department Store",2],
+["Infirmary",2],
+["Tank Factory",2],
+["Supply Depot",1]
+],
+
+"Dragon Command|Department Store": [
+["Department Store",2],
+["Infirmary",2],
+["Tank Factory",3],
+["Armory",1],
+["Supply Depot",1]
+],
+
+"Dragon Command|Infirmary": [
+["Infirmary",2],
+["Tank Factory",2],
+["Supply Depot",2],
+["Armory",3],
+["Department Store",3]
+],
+
+"Dragon Command|Supply Depot": [
+["Supply Depot",3],
+["Tank Factory",3],
+["Armory",3],
+["Department Store",2],
+["Infirmary",3]
+],
+
+"Dragon Command|Tank Factory": [
+["Tank Factory",1],
+["Infirmary",1],
+["Department Store",1],
+["Armory",1],
+["Supply Depot",1]
+],
+
+"Infirmary|Armory": [
+["Armory",2],
+["Tank Factory",2],
+["Supply Depot",1],
+["Dragon Command",2],
+["Department Store",2]
+],
+
+"Infirmary|Dragon Command": [
+["Dragon Command",1],
+["Supply Depot",3],
+["Tank Factory",3],
+["Armory",3],
+["Department Store",2]
+],
+
+"Infirmary|Department Store": [
+["Department Store",1],
+["Armory",2],
+["Tank Factory",2],
+["Supply Depot",1],
+["Dragon Command",3]
+],
+
+"Infirmary|Supply Depot": [
+["Supply Depot",3],
+["Tank Factory",3],
+["Armory",3],
+["Department Store",3],
+["Dragon Command",3]
+],
+
+"Infirmary|Tank Factory": [
+["Tank Factory",2],
+["Supply Depot",2],
+["Armory",3],
+["Department Store",3],
+["Dragon Command",3]
+],
+
+"Supply Depot|Armory": [
+["Armory",2],
+["Tank Factory",1],
+["Infirmary",1],
+["Department Store",3],
+["Dragon Command",1]
+],
+
+"Supply Depot|Department Store": [
+["Department Store",1],
+["Armory",2],
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",1]
+],
+
+"Supply Depot|Dragon Command": [
+["Dragon Command",2],
+["Department Store",2],
+["Infirmary",2],
+["Tank Factory",3],
+["Armory",1]
+],
+
+"Supply Depot|Infirmary": [
+["Infirmary",3],
+["Dragon Command",2],
+["Department Store",1],
+["Armory",2],
+["Tank Factory",2]
+],
+
+"Supply Depot|Tank Factory": [
+["Tank Factory",1],
+["Infirmary",3],
+["Dragon Command",2],
+["Department Store",1],
+["Armory",1]
+],
+
+"Tank Factory|Armory": [
+["Armory",3],
+["Department Store",2],
+["Infirmary",3],
+["Dragon Command",1],
+["Supply Depot",3]
+],
+
+"Tank Factory|Department Store": [
+["Department Store",2],
+["Infirmary",3],
+["Dragon Command",1],
+["Supply Depot",2],
+["Armory",2]
+],
+
+"Tank Factory|Dragon Command": [
+["Dragon Command",3],
+["Infirmary",1],
+["Department Store",1],
+["Armory",1],
+["Supply Depot",3]
+],
+
+"Tank Factory|Infirmary": [
+["Infirmary",3],
+["Dragon Command",2],
+["Department Store",1],
+["Armory",1],
+["Supply Depot",3]
+],
+
+"Tank Factory|Supply Depot": [
+["Supply Depot",2],
+["Armory",3],
+["Department Store",3],
+["Dragon Command",3],
+["Infirmary",2]
+]
+
+};
+
+const cryptex = document.getElementById("cryptex");
+const valve = document.getElementById("valve");
+const results = document.getElementById("results");
+const error = document.getElementById("error");
+
+function update(){
+
+    const c = cryptex.value;
+    const v = valve.value;
+
+    results.innerHTML = "";
+    error.innerHTML = "";
+
+    if(c === v){
+        error.innerHTML = "Incompatible";
+        return;
+    }
+
+    const key = `${c}|${v}`;
+    const route = data[key];
+
+    if(!route) return;
+
+    route.forEach(step => {
+
+        const div = document.createElement("div");
+        div.className = "step";
+
+        div.innerHTML = `
+            <div class="place">${step[0]}</div>
+            <div class="number">${step[1]}</div>
+        `;
+
+        results.appendChild(div);
+
+    });
+
+    const ending = document.createElement("div");
+    ending.className = "step";
+
+    ending.innerHTML = `
+        <div class="place">${c}</div>
+        <div class="ending">Ending</div>
+    `;
+
+    results.appendChild(ending);
+
+}
+
+cryptex.addEventListener("change", update);
+valve.addEventListener("change", update);
+
+update();
+
+</script>
+
+</body>
+</html>
